@@ -1,7 +1,7 @@
 // TradingAgentStack MCP core: read-only. Mirrors the hosted endpoint (https://tradingagentstack.com/api/mcp).
 export const DATA_URL = "https://tradingagentstack.com/data/tools.json";
 export const DISCLAIMER = "Not financial advice. Verify with the vendor.";
-export const VERSION = "0.3.0";
+export const VERSION = "0.3.1";
 const CACHE_MS = 60 * 60 * 1000; // 1 hour
 
 type Json = any; // dataset rows are open-ended JSON objects
@@ -48,6 +48,9 @@ export const TOOLS = [
     inputSchema: { type: "object", properties: {} } },
 ];
 
+// Paid setup pointer: only in get_tool, only for broker, bot and prediction-market categories (matches /api/mcp).
+export const SETUP_HELP = { url: "https://tradingagentstack.com/custom-agents/", note: "Paid setup service offered by the site owner" };
+export const SETUP_HELP_CATS = new Set(["broker_mcp", "broker_api", "ai_bot_platform", "bot_exchange", "open_source_bot", "prediction_market"]);
 const slugify = (s: unknown) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const MONEY_CATS_NO = new Set(["data_mcp", "data_api", "agent_framework", "ai_signals", "bot_vps", "risk_tool", "trading_agent", "security_tool"]);
 const canLive = (t: Json) => !MONEY_CATS_NO.has(t.category) && t.safety_level !== "Can't place real-money orders";
@@ -71,7 +74,7 @@ export async function callTool(name: string, args: Json = {}) {
         .filter(([, s]) => !terms.length || s > 0).sort((a, b) => b[1] - a[1] || a[0].name.localeCompare(b[0].name)).slice(0, 20).map(([t]) => t);
       return wrap({ count: r.length, tools: r.map(brief) }, r, meta);
     }
-    case "get_tool": { const t = find(tools, args.slug); if (!t) throw new Error(`No tool matches '${args.slug}'. Use search_tools first.`); return wrap(t, [t], meta); }
+    case "get_tool": { const t = find(tools, args.slug); if (!t) throw new Error(`No tool matches '${args.slug}'. Use search_tools first.`); return wrap(SETUP_HELP_CATS.has(t.category) ? { ...t, setup_help: SETUP_HELP } : t, [t], meta); }
     case "list_category": {
       const cats = [...new Map(tools.map((t) => [t.category, t.category_label])).entries()].map(([slug, label]) => ({ slug, label, count: tools.filter((t) => t.category === slug).length }));
       const r = tools.filter((t) => t.category === args.category);

@@ -1,6 +1,6 @@
 {
   "name": "tradingagentstack-mcp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Read-only MCP server for the TradingAgentStack directory: search AI trading tools, broker MCP servers and APIs, compare them, and see who places the order. Every answer carries sources and last-checked dates.",
   "mcpName": "io.github.intoApex/tradingagentstack",
   "type": "module",
