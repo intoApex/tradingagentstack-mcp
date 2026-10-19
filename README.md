@@ -30,6 +30,19 @@ claude mcp add --transport http tradingagentstack https://tradingagentstack.com/
 
 **Claude Desktop / claude.ai:** Settings → Connectors → Add custom connector → paste `https://tradingagentstack.com/api/mcp`
 
+**Claude Desktop (local, via npm):** add this to `claude_desktop_config.json` (Settings → Developer → Edit Config), then restart Claude Desktop. Needs Node.js 18 or later.
+
+```json
+{
+  "mcpServers": {
+    "tradingagentstack": {
+      "command": "npx",
+      "args": ["-y", "tradingagentstack-mcp"]
+    }
+  }
+}
+```
+
 **Cursor** (`.cursor/mcp.json`)
 
 ```json
@@ -54,6 +67,16 @@ claude mcp add --transport http tradingagentstack https://tradingagentstack.com/
 The server reads the open dataset published at https://tradingagentstack.com/data/ (JSON and CSV, CC BY 4.0). Also available for LLMs: [`llms.txt`](https://tradingagentstack.com/llms.txt) and [`llms-full.txt`](https://tradingagentstack.com/llms-full.txt).
 
 Missing a tool or spotted an outdated fact? [Submit it](https://tradingagentstack.com/submit/) or open an issue.
+
+## Build from source
+
+```bash
+npm install
+npm run build
+node dist/index.js   # stdio server
+```
+
+The local server fetches https://tradingagentstack.com/data/tools.json and caches it in memory for one hour. Set `TAS_DATA_URL` to point it at another copy of the dataset.
 
 ## Disclaimer
 
