@@ -1,5 +1,7 @@
 # TradingAgentStack MCP Server
 
+[![TradingAgentStack MCP connector](https://glama.ai/mcp/connectors/io.github.intoApex/tradingagentstack/badges/score.svg)](https://glama.ai/mcp/connectors/io.github.intoApex/tradingagentstack)
+
 **Know what an AI trading tool can do with your money before you connect it.**
 
 A free, read-only [Model Context Protocol](https://modelcontextprotocol.io) server that lets Claude, ChatGPT, Cursor or your own agent query the [TradingAgentStack](https://tradingagentstack.com) directory: sourced facts on **114 AI trading tools**, including every official **broker MCP server**, market data APIs and MCPs, agent frameworks, backtesters, trading bots, prediction market APIs and VPS hosts.
