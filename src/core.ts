@@ -1,7 +1,7 @@
 // TradingAgentStack MCP core: read-only. Mirrors the hosted endpoint (https://tradingagentstack.com/api/mcp).
 export const DATA_URL = "https://tradingagentstack.com/data/tools.json";
 export const DISCLAIMER = "Not financial advice. Verify with the vendor.";
-export const VERSION = "0.3.1";
+export const VERSION = "0.3.2";
 const CACHE_MS = 60 * 60 * 1000; // 1 hour
 
 type Json = any; // dataset rows are open-ended JSON objects
@@ -51,6 +51,17 @@ export const TOOLS = [
 // Paid setup pointer: only in get_tool, only for broker, bot and prediction-market categories (matches /api/mcp).
 export const SETUP_HELP = { url: "https://tradingagentstack.com/custom-agents/", note: "Paid setup service offered by the site owner" };
 export const SETUP_HELP_CATS = new Set(["broker_mcp", "broker_api", "ai_bot_platform", "bot_exchange", "open_source_bot", "prediction_market"]);
+// Our own open-source limits tool, offered only where an agent can trade without a per-order confirmation (matches /api/mcp).
+// It never changes any fact or score; it's a separate, clearly labelled field.
+export const GUARD_PROFILES = new Set(["alpaca-mcp-server", "ccxt-mcp-server"]);
+const GUARD_WHO = new Set(["AI trades directly", "Approval optional"]);
+export function limitsTool(t: Json): Json | null {
+  if (t.category !== "broker_mcp" || !GUARD_WHO.has(t.who_places_order)) return null;
+  return { name: "TAS Guard", url: "https://tradingagentstack.com/guard/", install: "npx tas-guard",
+    what: "Free open-source proxy you put in front of this connector: per-order and daily limits, symbol allow list, human approval (including from a phone), kill switch, audit log.",
+    profile: GUARD_PROFILES.has(t.slug) ? `https://tradingagentstack.com/data/profiles/${t.slug}.json` : "none yet (runs in heuristic mode)",
+    note: "Made by the site owner. It does not affect safety scores or rankings." };
+}
 const slugify = (s: unknown) => String(s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const MONEY_CATS_NO = new Set(["data_mcp", "data_api", "agent_framework", "ai_signals", "bot_vps", "risk_tool", "trading_agent", "security_tool"]);
 const canLive = (t: Json) => !MONEY_CATS_NO.has(t.category) && t.safety_level !== "Can't place real-money orders";
@@ -74,7 +85,12 @@ export async function callTool(name: string, args: Json = {}) {
         .filter(([, s]) => !terms.length || s > 0).sort((a, b) => b[1] - a[1] || a[0].name.localeCompare(b[0].name)).slice(0, 20).map(([t]) => t);
       return wrap({ count: r.length, tools: r.map(brief) }, r, meta);
     }
-    case "get_tool": { const t = find(tools, args.slug); if (!t) throw new Error(`No tool matches '${args.slug}'. Use search_tools first.`); return wrap(SETUP_HELP_CATS.has(t.category) ? { ...t, setup_help: SETUP_HELP } : t, [t], meta); }
+    case "get_tool": {
+      const t = find(tools, args.slug); if (!t) throw new Error(`No tool matches '${args.slug}'. Use search_tools first.`);
+      const r: Json = SETUP_HELP_CATS.has(t.category) ? { ...t, setup_help: SETUP_HELP } : { ...t };
+      const lt = limitsTool(t); if (lt) r.add_limits = lt;
+      return wrap(r, [t], meta);
+    }
     case "list_category": {
       const cats = [...new Map(tools.map((t) => [t.category, t.category_label])).entries()].map(([slug, label]) => ({ slug, label, count: tools.filter((t) => t.category === slug).length }));
       const r = tools.filter((t) => t.category === args.category);
@@ -90,7 +106,10 @@ export async function callTool(name: string, args: Json = {}) {
     case "broker_order_gating": {
       const bm = tools.filter((t) => t.category === "broker_mcp"); const groups: Record<string, Json[]> = {};
       for (const t of bm) (groups[t.who_places_order || "unknown"] ||= []).push({ name: t.name, slug: t.slug, note: t.order_gating_note, safety: pct(t), page: t.page, source: (t.safety_sources || {}).unattended || t.source, last_checked: t.last_checked });
-      return wrap({ total: bm.length, groups, research: "https://tradingagentstack.com/research/broker-mcp-order-gating/" }, bm, meta);
+      const lt = { name: "TAS Guard", url: "https://tradingagentstack.com/guard/", install: "npx tas-guard", applies_to: bm.filter((t) => limitsTool(t)).map((t) => t.slug),
+        what: "Free open-source proxy that adds per-order and daily limits, human approval and a kill switch in front of connectors where the AI trades directly or approval is optional.",
+        note: "Made by the site owner. It does not affect safety scores or rankings." };
+      return wrap({ total: bm.length, groups, research: "https://tradingagentstack.com/research/broker-mcp-order-gating/", add_limits: lt }, bm, meta);
     }
     default: throw new Error("Unknown tool: " + name);
   }

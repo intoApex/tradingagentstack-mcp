@@ -1,19 +1,46 @@
 {
   "name": "tradingagentstack-mcp",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Read-only MCP server for the TradingAgentStack directory: search AI trading tools, broker MCP servers and APIs, compare them, and see who places the order. Every answer carries sources and last-checked dates.",
   "mcpName": "io.github.intoApex/tradingagentstack",
   "type": "module",
-  "bin": { "tradingagentstack-mcp": "dist/index.js" },
+  "bin": {
+    "tradingagentstack-mcp": "dist/index.js"
+  },
   "main": "dist/index.js",
-  "files": ["dist"],
-  "scripts": { "build": "tsc && node scripts/chmod.mjs", "prepublishOnly": "npm run build", "start": "node dist/index.js" },
-  "keywords": ["mcp", "model-context-protocol", "trading", "broker", "ai-agents", "market-data"],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/chmod.mjs",
+    "prepublishOnly": "npm run build",
+    "start": "node dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "trading",
+    "broker",
+    "ai-agents",
+    "market-data"
+  ],
   "homepage": "https://tradingagentstack.com/mcp/",
-  "repository": { "type": "git", "url": "git+https://github.com/intoApex/tradingagentstack-mcp.git" },
-  "bugs": { "url": "https://github.com/intoApex/tradingagentstack-mcp/issues" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/intoApex/tradingagentstack-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/intoApex/tradingagentstack-mcp/issues"
+  },
   "license": "MIT",
-  "engines": { "node": ">=18" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.32.1" },
-  "devDependencies": { "@types/node": "^20.11.0", "typescript": "^5.6.0" }
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.6.0"
+  }
 }

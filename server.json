@@ -3,13 +3,26 @@
   "name": "io.github.intoApex/tradingagentstack",
   "title": "TradingAgentStack",
   "description": "Read-only, sourced directory of 114 AI trading tools, broker MCP servers and market data APIs.",
-  "version": "0.3.1",
-  "repository": { "url": "https://github.com/intoApex/tradingagentstack-mcp", "source": "github" },
+  "version": "0.3.2",
+  "repository": {
+    "url": "https://github.com/intoApex/tradingagentstack-mcp",
+    "source": "github"
+  },
   "websiteUrl": "https://tradingagentstack.com/mcp/",
   "packages": [
-    { "registryType": "npm", "identifier": "tradingagentstack-mcp", "version": "0.3.1", "transport": { "type": "stdio" } }
+    {
+      "registryType": "npm",
+      "identifier": "tradingagentstack-mcp",
+      "version": "0.3.2",
+      "transport": {
+        "type": "stdio"
+      }
+    }
   ],
   "remotes": [
-    { "type": "streamable-http", "url": "https://tradingagentstack.com/api/mcp" }
+    {
+      "type": "streamable-http",
+      "url": "https://tradingagentstack.com/api/mcp"
+    }
   ]
 }
