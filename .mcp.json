@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tradingagentstack": {
+      "type": "http",
+      "url": "https://tradingagentstack.com/api/mcp"
+    }
+  }
+}
