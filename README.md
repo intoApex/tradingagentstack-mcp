@@ -29,19 +29,71 @@ Checked against `tools/list` on the hosted endpoint (server version 0.5.0) on 20
 
 ## npm package and this repository
 
-`npx -y tradingagentstack-mcp` runs the current npm release. That release is `0.5.0`, and its binary is `tradingagentstack-mcp` (`src/index.js`). It is published from [intoApex/ai-trading-tools](https://github.com/intoApex/ai-trading-tools) (`mcp-server`). Its tool list matches the hosted endpoint.
+The recommended way to run the server is the published npm package:
 
-Three differences remain between that package and the hosted server:
+```bash
+npx -y tradingagentstack-mcp
+```
+
+That command installs the current npm release. The release is `0.5.0`, and its binary is `tradingagentstack-mcp` (`src/index.js`). The package is built from [intoApex/ai-trading-tools](https://github.com/intoApex/ai-trading-tools) (`mcp-server`). Its tool list matches the hosted endpoint at `https://tradingagentstack.com/api/mcp`. Use that URL when you want the same server with no local process.
+
+This repository's own code is older. It is still version 0.3.2. `npm run build` and `node dist/index.js` in this checkout start that older stdio server. It implements only `search_tools`, `get_tool`, `list_category`, `compare_tools`, and `broker_order_gating`. It has no bundled dataset.
+
+Three differences remain between the published package and the hosted server:
 
 - The hosted server tells the client to call `get_risk` before connecting an agent to a wallet, exchange, or trading tool. The npm stdio server introduces itself as a read-only directory of AI trading tools.
 - Hosted `tools/list` gives each tool a title and marks it read-only, non-destructive, idempotent, and closed-world (`openWorldHint: false`). The npm stdio server sets `readOnlyHint: true` and `openWorldHint: true`.
 - If the live dataset fetch fails, the npm package serves a copy bundled in `0.5.0` (133 tools, generated 2026-10-23). On 2026-10-27 the live file https://tradingagentstack.com/data/tools.json reported `meta.count` 143 (generated 2026-10-26). The site homepage lists the same live total.
 
-This repository is still version 0.3.2. `npm run build` and `node dist/index.js` start that older stdio server. It implements only `search_tools`, `get_tool`, `list_category`, `compare_tools`, and `broker_order_gating`. It has no bundled dataset.
-
 ## Install
 
-Node.js 18 or later is required for the npm package. The hosted endpoint needs no install.
+Run the published npm package, or connect to the hosted endpoint. Both are the current eight-tool server. Building this repository is the older five-tool server, under Build from source.
+
+Node.js 18 or later is required for the npm package. The hosted endpoint needs no install and no API key.
+
+An agent can follow [`llms-install.md`](llms-install.md) on its own.
+
+### Cline
+
+No API key. Add one server named `tradingagentstack`. The settings file is `~/.cline/data/settings/cline_mcp_settings.json` (Windows: `%USERPROFILE%\.cline\data\settings\cline_mcp_settings.json`), unless `CLINE_MCP_SETTINGS_PATH` is set. In the Cline panel, open it from the MCP Servers icon, then Configure, then Configure MCP Servers. Step-by-step instructions for an agent are in [`llms-install.md`](llms-install.md).
+
+Published npm package (recommended local run):
+
+```json
+{
+  "mcpServers": {
+    "tradingagentstack": {
+      "command": "npx",
+      "args": ["-y", "tradingagentstack-mcp"],
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
+```
+
+```bash
+cline mcp add tradingagentstack --yes -- npx -y tradingagentstack-mcp
+```
+
+Hosted endpoint. `"type": "streamableHttp"` is required. A URL with no type is legacy SSE, and this endpoint is streamable HTTP.
+
+```json
+{
+  "mcpServers": {
+    "tradingagentstack": {
+      "type": "streamableHttp",
+      "url": "https://tradingagentstack.com/api/mcp",
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
+```
+
+```bash
+cline mcp add tradingagentstack https://tradingagentstack.com/api/mcp --transport http --yes
+```
 
 ### Gemini CLI
 
@@ -146,6 +198,8 @@ The hosted server and the npm package read the open dataset at https://tradingag
 Missing a tool or spotted an outdated fact? [Submit it](https://tradingagentstack.com/submit/) or open an issue.
 
 ## Build from source
+
+This path is for working on the older code in this repository. The recommended run command is `npx -y tradingagentstack-mcp`, the published package built from [intoApex/ai-trading-tools](https://github.com/intoApex/ai-trading-tools) (`mcp-server`).
 
 ```bash
 npm install
