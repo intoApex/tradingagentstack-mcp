@@ -1,6 +1,7 @@
 # TradingAgentStack MCP Server
 
 [![TradingAgentStack MCP connector](https://glama.ai/mcp/connectors/io.github.intoApex/tradingagentstack/badges/score.svg)](https://glama.ai/mcp/connectors/io.github.intoApex/tradingagentstack)
+[![Listed on mcpservers.org](https://mcpservers.org/badge.svg)](https://mcpservers.org/servers/intoapex/tradingagentstack-mcp)
 
 **Know what an AI trading tool can do with your money before you connect it.**
 
