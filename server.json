@@ -2,18 +2,19 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.intoApex/tradingagentstack",
   "title": "TradingAgentStack",
-  "description": "Read-only, sourced directory of 114 AI trading tools, broker MCP servers and market data APIs.",
-  "version": "0.3.2",
-  "repository": {
-    "url": "https://github.com/intoApex/tradingagentstack-mcp",
-    "source": "github"
-  },
+  "description": "Check bots, exchanges and wallets before you connect; Agent Risk Scores, incidents, sources.",
+  "version": "0.6.0",
   "websiteUrl": "https://tradingagentstack.com/mcp/",
+  "repository": {
+    "url": "https://github.com/intoApex/ai-trading-tools",
+    "source": "github",
+    "subfolder": "mcp-server"
+  },
   "packages": [
     {
       "registryType": "npm",
       "identifier": "tradingagentstack-mcp",
-      "version": "0.3.2",
+      "version": "0.6.0",
       "transport": {
         "type": "stdio"
       }
