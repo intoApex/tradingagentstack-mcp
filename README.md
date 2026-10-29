@@ -5,7 +5,7 @@
 
 **Know what an AI trading tool can do with your money before you connect it.**
 
-A free, read-only [Model Context Protocol](https://modelcontextprotocol.io) server for the [TradingAgentStack](https://tradingagentstack.com) directory of over 140 AI trading tools, including broker MCP servers, market data APIs and MCPs, agent frameworks, backtesters, trading bots, prediction market APIs, and VPS hosts. It also returns Agent Risk Scores, incident records, and a TAS Check verdict for a bot, exchange, swap service, or wallet link.
+A free, read-only [Model Context Protocol](https://modelcontextprotocol.io) server for [TradingAgentStack](https://tradingagentstack.com). It returns the [verified AI trading leaderboard](https://tradingagentstack.com/ai-trading-leaderboard/) (results computed from public chain and venue data, never screenshots), Agent Risk Scores, incident records, a TAS Check verdict for a bot, exchange, swap service, or wallet link, and the sourced directory of over 140 AI trading tools: broker MCP servers, market data APIs and MCPs, agent frameworks, backtesters, trading bots, prediction market APIs, and VPS hosts.
 
 Every answer includes the vendor's source URLs and the date the fact was last checked.
 
@@ -15,40 +15,36 @@ Every answer includes the vendor's source URLs and the date the fact was last ch
 
 ## Tools
 
-Checked against `tools/list` on the hosted endpoint (server version 0.5.0) on 2026-10-27. The same eight tools, with the same descriptions and inputs, are in the published npm package `tradingagentstack-mcp@0.5.0`.
+Checked against `tools/list` on the hosted endpoint (server version 0.6.0) on 2026-10-29. The same ten tools, with the same descriptions and inputs, are in the published npm package `tradingagentstack-mcp@0.6.0` and in this repository's `src/`.
 
 | Tool | What it does |
 |---|---|
-| `search_tools(query, category?, can_trade_live?, has_paper?)` | Search by name, market, or feature |
+| `search_tools(query, category?, can_trade_live?, has_paper?, limit?)` | Search by name, market, or feature. 10 results by default, up to 20 |
 | `get_tool(slug)` | Every fact for one tool, with sources and safety inputs |
 | `list_category(category)` | All tools in a category. An unknown category returns the category list |
 | `compare_tools(slug_a, slug_b)` | Side-by-side comparison |
 | `broker_order_gating()` | Who places the order for every broker MCP server (you, or the AI) |
 | `get_risk(tool?, category?)` | Agent Risk Score for one tool, or a ranking for a category. Each input has a source. Missing inputs are listed, not guessed |
-| `get_incidents(since?, tool?)` | Security incidents from official disclosures, filtered by date (`YYYY-MM-DD`) or tool |
-| `check(query)` | TAS Check: whether a name, link, @handle, or GitHub repo is official, a known fake, or a lookalike, plus custody, freeze, API-key risk, incidents, and a short safe setup. Unknown is not safe |
+| `get_incidents(since?, tool?)` | Security incidents from official disclosures, filtered by date (`YYYY-MM-DD`) or by a listed tool or tracked bot, exchange or wallet |
+| `check(query)` | TAS Check: whether a name, link, @handle, or GitHub repo is official, a known fake, or a lookalike, plus custody, freeze, API-key risk, privacy facts, incidents, and a short safe setup. Unknown is not safe |
+| `check_setup(items)` | One report for up to 8 wallets, bots, exchanges or connectors: keys, worst case, who places orders, score, recent incidents and first fix for each, plus the biggest risk |
+| `get_leaderboard(section?, limit?)` | The verified AI trading leaderboard: registered AI agents, AI-labelled and large Hyperliquid vaults (return, BTC over the same dates, max drawdown, Sortino, with the security gate), plus sections `apps` (AI trading apps on Hyperliquid), `models` (AI model benchmarks), `signals` (venue-reported robot signals) and `usage` (bot usage and repo health) |
 
 ## npm package and this repository
 
-The recommended way to run the server is the published npm package:
+The recommended way to run the server locally is the published npm package:
 
 ```bash
 npx -y tradingagentstack-mcp
 ```
 
-That command installs the current npm release. The release is `0.5.0`, and its binary is `tradingagentstack-mcp` (`src/index.js`). The package is built from [intoApex/ai-trading-tools](https://github.com/intoApex/ai-trading-tools) (`mcp-server`). Its tool list matches the hosted endpoint at `https://tradingagentstack.com/api/mcp`. Use that URL when you want the same server with no local process.
+That command installs the current npm release, `0.6.0`. Its binary is `tradingagentstack-mcp` (`src/index.js`). This repository holds the same source: `npm install` and `node src/index.js` start the same ten-tool stdio server. Releases are published to npm and the official MCP Registry from TradingAgentStack's main repository by GitHub Actions, and this repository is kept in step.
 
-This repository's own code is older. It is still version 0.3.2. `npm run build` and `node dist/index.js` in this checkout start that older stdio server. It implements only `search_tools`, `get_tool`, `list_category`, `compare_tools`, and `broker_order_gating`. It has no bundled dataset.
-
-Three differences remain between the published package and the hosted server:
-
-- The hosted server tells the client to call `get_risk` before connecting an agent to a wallet, exchange, or trading tool. The npm stdio server introduces itself as a read-only directory of AI trading tools.
-- Hosted `tools/list` gives each tool a title and marks it read-only, non-destructive, idempotent, and closed-world (`openWorldHint: false`). The npm stdio server sets `readOnlyHint: true` and `openWorldHint: true`.
-- If the live dataset fetch fails, the npm package serves a copy bundled in `0.5.0` (133 tools, generated 2026-10-23). On 2026-10-27 the live file https://tradingagentstack.com/data/tools.json reported `meta.count` 143 (generated 2026-10-26). The site homepage lists the same live total.
+The local server reads the live dataset at https://tradingagentstack.com/data/tools.json. If that fetch fails, the npm package falls back to the copy bundled when it was published (`data/tools.json`, which isn't committed here). The one difference from the hosted endpoint: hosted `tools/list` gives each tool a title and marks it read-only, non-destructive, idempotent, and closed-world (`openWorldHint: false`), while the npm stdio server sets `readOnlyHint: true` and `openWorldHint: true`.
 
 ## Install
 
-Run the published npm package, or connect to the hosted endpoint. Both are the current eight-tool server. Building this repository is the older five-tool server, under Build from source.
+Run the published npm package, or connect to the hosted endpoint. Both are the current ten-tool server.
 
 Node.js 18 or later is required for the npm package. The hosted endpoint needs no install and no API key.
 
@@ -191,6 +187,8 @@ No API key and no sign-in.
 - "What safeguards does the Robinhood Trading MCP have?"
 - "Before I connect this wallet, call get_risk and tell me what it could lose."
 - "Is this Telegram bot link official, or a lookalike?"
+- "Which AI trading agents and AI-run vaults actually made money? Use get_leaderboard."
+- "Check my setup: Phantom, Trojan, Binance and the Alpaca MCP server."
 
 ## Data
 
@@ -198,17 +196,14 @@ The hosted server and the npm package read the open dataset at https://tradingag
 
 Missing a tool or spotted an outdated fact? [Submit it](https://tradingagentstack.com/submit/) or open an issue.
 
-## Build from source
-
-This path is for working on the older code in this repository. The recommended run command is `npx -y tradingagentstack-mcp`, the published package built from [intoApex/ai-trading-tools](https://github.com/intoApex/ai-trading-tools) (`mcp-server`).
+## Run from source
 
 ```bash
 npm install
-npm run build
-node dist/index.js   # stdio server from this repo (0.3.2, five tools)
+node src/index.js    # the same ten-tool stdio server as the npm package
 ```
 
-That local server fetches https://tradingagentstack.com/data/tools.json and caches it in memory for one hour. Set `TAS_DATA_URL` to point it at another copy of the dataset. It does not include `get_risk`, `get_incidents`, or `check`. For those, use the hosted endpoint or `npx -y tradingagentstack-mcp`.
+It fetches https://tradingagentstack.com/data/tools.json. Set `TAS_DATA_URL` to point it at another copy of the dataset. `node scripts/copy-data.js` saves a local copy to `data/tools.json`, which the server uses when the live fetch fails.
 
 ## Disclaimer
 

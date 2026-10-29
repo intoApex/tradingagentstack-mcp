@@ -15,12 +15,10 @@ npx -y tradingagentstack-mcp
 ```
 
 - Package: `tradingagentstack-mcp` on npm.
-- Built from https://github.com/intoApex/ai-trading-tools in the `mcp-server` directory.
+- Source: this repository (`src/index.js`), the same code as the published package.
 - Binary name: `tradingagentstack-mcp`.
 - Needs Node.js 18 or later, plus network access to the npm registry and to https://tradingagentstack.com/data/tools.json.
-- Last checked 2026-10-27: npm version `0.5.0`.
-
-This GitHub repository (`intoApex/tradingagentstack-mcp`) is an older checkout, version 0.3.2. Leave it unbuilt. `npm install`, `npm run build`, and `node dist/index.js` here start a five-tool server. The published package and the hosted endpoint expose eight tools.
+- Last checked 2026-10-29: npm version `0.6.0`.
 
 ## 2. Hosted endpoint
 
@@ -32,18 +30,18 @@ https://tradingagentstack.com/api/mcp
 
 - Transport: streamable HTTP.
 - Auth: none.
-- Same eight tools as the published package.
+- Same ten tools as the published package.
 
 ## Tools to expect
 
-`search_tools`, `get_tool`, `list_category`, `compare_tools`, `broker_order_gating`, `get_risk`, `get_incidents`, `check`.
+`search_tools`, `get_tool`, `list_category`, `compare_tools`, `broker_order_gating`, `get_risk`, `get_incidents`, `check`, `check_setup`, `get_leaderboard`.
 
-A server that lists only the first five tools is the old checkout in this repository. Switch it to the npm command or the hosted URL above.
+A server that lists only five or eight of these tools is an old version. Switch it to the npm command or the hosted URL above.
 
 ## Cline: npm package
 
 1. Run `node -v`. The version must be 18 or newer. If `node` or `npx` is missing, use the hosted endpoint in the next section.
-2. Run `npm view tradingagentstack-mcp version`. A version string means the package is reachable. On 2026-10-27 that version was `0.5.0`.
+2. Run `npm view tradingagentstack-mcp version`. A version string means the package is reachable. On 2026-10-29 that version was `0.6.0`.
 3. Open the MCP settings file:
    - If `CLINE_MCP_SETTINGS_PATH` is set, edit that path.
    - Otherwise edit `~/.cline/data/settings/cline_mcp_settings.json`.
@@ -72,7 +70,7 @@ A server that lists only the first five tools is the old checkout in this reposi
 cline mcp add tradingagentstack --yes -- npx -y tradingagentstack-mcp
 ```
 
-8. Reload MCP servers in Cline. Success: `tradingagentstack` is enabled and lists the eight tools named above. The first start can take longer while `npx` downloads the package. Retry once if that start times out.
+8. Reload MCP servers in Cline. Success: `tradingagentstack` is enabled and lists the ten tools named above. The first start can take longer while `npx` downloads the package. Retry once if that start times out.
 
 `npx -y tradingagentstack-mcp` speaks MCP on stdin and waits. A quiet waiting process is a successful manual start. Stop that process after a manual test so the terminal is free. Cline starts its own process from the settings file.
 
@@ -111,9 +109,9 @@ curl -sS -X POST https://tradingagentstack.com/api/mcp \
   -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\",\"params\":{}}"
 ```
 
-Success is HTTP 200 and a JSON body whose `result.tools` names are the eight tools listed above.
+Success is HTTP 200 and a JSON body whose `result.tools` names are the ten tools listed above.
 
-7. Reload MCP servers in Cline. Success: `tradingagentstack` is enabled and lists those eight tools.
+7. Reload MCP servers in Cline. Success: `tradingagentstack` is enabled and lists those ten tools.
 
 ## Other clients
 
@@ -125,7 +123,7 @@ The same two commands apply.
 ## Troubleshooting
 
 - `npx` is missing: install Node.js 18 or later, or use the hosted URL.
-- The tool list has five names: the config starts this repository with `node dist/index.js`. Point it at `npx -y tradingagentstack-mcp` or at `https://tradingagentstack.com/api/mcp`.
+- The tool list has five or eight names: the config starts an old version (for example `node dist/index.js` from an old checkout of this repository). Point it at `npx -y tradingagentstack-mcp` or at `https://tradingagentstack.com/api/mcp`.
 - The hosted server fails at connect: the entry includes `"type": "streamableHttp"`.
 - The first npm start times out: wait for the package download and reload the server once.
 - Set `TAS_DATA_URL` only when the user supplies another copy of the dataset. The default URL is https://tradingagentstack.com/data/tools.json.

@@ -1,12 +1,15 @@
 {
   "name": "tradingagentstack-mcp",
-  "version": "0.3.2",
-  "description": "Read-only directory of over 140 AI trading tools. Search and compare them, see who places a broker order, read Agent Risk Scores and incidents, and check whether a bot, exchange, or wallet link is official.",
+  "version": "0.6.0",
+  "description": "Verified AI trading leaderboard, Agent Risk Scores, incidents, and a check for official, fake and lookalike links for trading bots, exchanges and wallets. Read-only directory of over 140 AI trading tools with sources.",
   "contextFileName": "GEMINI.md",
   "mcpServers": {
     "tradingagentstack": {
       "command": "npx",
-      "args": ["-y", "tradingagentstack-mcp"]
+      "args": [
+        "-y",
+        "tradingagentstack-mcp"
+      ]
     }
   }
 }
