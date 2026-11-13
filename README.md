@@ -179,6 +179,10 @@ Any client that supports remote MCP over streamable HTTP:
 
 No API key and no sign-in.
 
+### Pay-per-call route for agents (x402)
+
+Agents that pay with [x402](https://www.x402.org/) can call the `check` answer at `https://tradingagentstack.com/api/x402?query=<link, domain, name or @handle>` for $0.01 in USDC on Base, with no sign-up. The same answer stays free through the `check` tool above. Verified with a settled payment on [PayAPI Market](https://payapi.market/api/crypto-scam-and-phishing-check-for-ai-agents-is-this-link-domain-handle).
+
 ## Example prompts
 
 - "Which broker MCP servers let the AI place live orders without my confirmation?"
